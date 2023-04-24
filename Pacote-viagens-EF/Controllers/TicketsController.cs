@@ -90,6 +90,16 @@ namespace Pacote_viagens_EF.Controllers
           {
               return Problem("Entity set 'Pacote_viagens_EFContext.Ticket'  is null.");
           }
+            var adressorigin = await _context.Address.Include(a => a.Id).FirstOrDefaultAsync(a => a.Id == ticket.Origin.Id);
+            var adressdestin = await _context.Address.Include(a => a.Id).FirstOrDefaultAsync(a => a.Id == ticket.Destin.Id);
+
+            if(adressorigin != null || adressdestin != null)
+            {
+                return NotFound();
+            }
+            ticket.Origin = adressorigin;
+            ticket.Destin = adressdestin;
+
             _context.Ticket.Add(ticket);
             await _context.SaveChangesAsync();
 
